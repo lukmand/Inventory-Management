@@ -12,7 +12,7 @@ def register_user(email, password):
     sheet_url = st.secrets["user_gsheets_url"]
     
     check_query = f'select Email from "{sheet_url}" where Email = "{email}"'
-    user = data.get_data(duplicate_query)
+    user = data.get_data(check_query)
     header = user[0]
     
     for row in user[1:]:
