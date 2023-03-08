@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import gspread
 from shillelagh.backends.apsw.db import connect
 from google.oauth2 import service_account
 
@@ -8,7 +9,8 @@ def init_gsheet():
     credentials = service_account.Credentials.from_service_account_info(
         st.secrets["gcp_service_account"],
         scopes = ['https://spreadsheets.google.com/feeds',
-                 'https://www.googleapis.com/auth/drive'],
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/drive.readonly'],
     )
     connection = connect(":memory:", adapter_kwargs={
         "gsheetaspi": {
@@ -23,12 +25,22 @@ def init_gsheet():
                 "token_uri": st.secrets["gcp_service_account"]["token_uri"],
                 "auth_provider_x509_cert_url": st.secrets["gcp_service_account"]["auth_provider_x509_cert_url"],
                 "client_x509_cert_url": st.secrets["gcp_service_account"]["client_x509_cert_url"],
-                }
             },
-        })
+        },
+    })
         
    # authorize the API client
     return connection
+
+def init_gspread():
+    credentials = service_account.Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes = ['https://spreadsheets.google.com/feeds',
+                  'https://www.googleapis.com/auth/spreadsheets',
+                  'https://www.googleapis.com/auth/drive.readonly'],
+    )
+    client = gspread.authorize(credentials)
+    return client
 
 # define the scope of the API credentials
 def get_data(query):
@@ -47,7 +59,11 @@ def write_data(query):
     # open the specified spreadsheet
     cursor = client.cursor()
     cursor.execute(query)
+    
+def gspread_write_data(sheet_name, values):
+    client = init_gspread()
+    
+    sheet = client.open("Streamlit").worksheet(sheet_name)
+    sheet.append_row(values)
 
-sheet_url = st.secrets["user_gsheets_url"]
-query = f'SELECT * FROM "{sheet_url}"'
-get_data(query)
+#gspread_write_data('User', ['email', 'password', 0])

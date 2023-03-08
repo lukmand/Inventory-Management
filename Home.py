@@ -10,18 +10,18 @@ DEFAULT_PAGE = "Home.py"
 def register_user(email, password):
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     sheet_url = st.secrets["user_gsheets_url"]
-    
+    gsheet_name = 'User'
     check_query = f'select Email from "{sheet_url}" where Email = "{email}"'
     user = data.get_data(check_query)
-    header = user[0]
+    #print(user)
     
-    for row in user[1:]:
-        if row[header.index('Email')] == email:
-            return False
-        else:
-            insert_query = f'insert into "{sheet_url}" values("{email}", "{password}", "{0}")'
-            data.write_data(insert_query)
-            return True
+    if user.shape[0] > 0:
+        st.warning("Account already exist")
+        return False
+    else:
+        #insert_query = f'insert into "{sheet_url}" values("{email}", "{hashed_password}", "{0}")'
+        data.gspread_write_data(gsheet_name, [email, hashed_password, 0])
+        return True
 
 def login_user(email, password):
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
@@ -29,11 +29,9 @@ def login_user(email, password):
     check_query = f'select Email, Password, Approved from "{sheet_url}" where Email = "{email}" and Password = "{hashed_password}" and Approved = "{1}"'
     
     user = data.get_data(check_query)
-    header = user[0]
-
-    for row in user[1:]:
-        if row[header.index('Email')] == email and row[header.index('Password')] == hashed_password and row[header.index('Approved')] == '1':
-            return True
+    #print(user)
+    if user.shape[0] > 0:
+        return True
     return False
 
 def get_all_pages():
@@ -118,7 +116,7 @@ if register_button:
     if email != '' and password != '':
         if register_user(email, password):
             st.success('Registered successfully! You can now log in.')
-        else:
-            st.warning('Email already exist')
+        ##else:
+            ##st.warning('Invalid username or password')
     else:
         st.error('Invalid username or password')
