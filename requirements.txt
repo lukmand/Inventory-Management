@@ -1,0 +1,8 @@
+pandas
+gspread
+shillelagh[all]
+google-api-python-client
+google-auth-oauthlib
+json
+hashlib
+pathlib
