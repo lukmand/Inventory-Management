@@ -9,20 +9,28 @@ DEFAULT_PAGE = "Home.py"
 
 def register_user(email, password):
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    user = data.get_data('User')
+    sheet_url = st.secrets["user_gsheets_url"]
+    
+    check_query = f'select Email from "{sheet_url}" where Email = "{email}"'
+    user = data.get_data(duplicate_query)
     header = user[0]
+    
     for row in user[1:]:
         if row[header.index('Email')] == email:
             return False
         else:
-            new_user = [email, hashed_password, 0]
-            data.write_data(new_user, 'User')
+            insert_query = f'insert into "{sheet_url}" values("{email}", "{password}", "{0}")'
+            data.write_data(insert_query)
             return True
 
 def login_user(email, password):
-    user = data.get_data('User')
-    header = user[0]
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    sheet_url = st.secrets["user_gsheets_url"]
+    check_query = f'select Email, Password, Approved from "{sheet_url}" where Email = "{email}" and Password = "{hashed_password}" and Approved = "{1}"'
+    
+    user = data.get_data(check_query)
+    header = user[0]
+
     for row in user[1:]:
         if row[header.index('Email')] == email and row[header.index('Password')] == hashed_password and row[header.index('Approved')] == '1':
             return True

@@ -1,37 +1,53 @@
 import streamlit as st
 import pandas as pd
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from shillelagh.backends.apsw.db import connect
+from google.oauth2 import service_account
 
-def init_gspread():
-    scope = ['https://spreadsheets.google.com/feeds',
-             'https://www.googleapis.com/auth/drive']
 
-    # specify the path to the API credentials file
-    creds = ServiceAccountCredentials.from_json_keyfile_name('project-streamlit-379903-0600fa4a998c.json', scope)
-
-    # authorize the API client
-    client = gspread.authorize(creds)
-    return client
+def init_gsheet():
+    credentials = service_account.Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes = ['https://spreadsheets.google.com/feeds',
+                 'https://www.googleapis.com/auth/drive'],
+    )
+    connection = connect(":memory:", adapter_kwargs={
+        "gsheetaspi": {
+            "service_account_info": {
+                "type": st.secrets["gcp_service_account"]["type"],
+                "project_id": st.secrets["gcp_service_account"]["project_id"],
+                "private_key_id": st.secrets["gcp_service_account"]["private_key_id"],
+                "private_key": st.secrets["gcp_service_account"]["private_key"],
+                "client_email": st.secrets["gcp_service_account"]["client_email"],
+                "client_id": st.secrets["gcp_service_account"]["client_id"],
+                "auth_uri": st.secrets["gcp_service_account"]["auth_uri"],
+                "token_uri": st.secrets["gcp_service_account"]["token_uri"],
+                "auth_provider_x509_cert_url": st.secrets["gcp_service_account"]["auth_provider_x509_cert_url"],
+                "client_x509_cert_url": st.secrets["gcp_service_account"]["client_x509_cert_url"],
+                }
+            },
+        })
+        
+   # authorize the API client
+    return connection
 
 # define the scope of the API credentials
-def get_data(sheet_name):
-    client = init_gspread()
-
+def get_data(query):
+    client = init_gsheet()
+    
     # open the specified spreadsheet
-    sheet = client.open('Streamlit').worksheet(sheet_name)
-
-    # read the data from the sheet
-    data = sheet.get_all_values()
+    cursor = conn.cursor()
+    rows = pd.DataFrame(cursor.execute(query))
 
     # print the data
-    return data
+    return rows
     
-def write_data(data, sheet_name):
-    client = init_gspread()
+def write_data(query):
+    client = init_gsheet()
     
     # open the specified spreadsheet
-    sheet = client.open('Streamlit').worksheet(sheet_name)
-    
-    sheet.append_row(data)
- 
+    cursor = conn.cursor()
+    cursor.execute(query)
+
+sheet_url = st.secrets["user_gsheets_url"]
+query = f'SELECT * FROM "{sheet_url}"'
+get_data(query)
