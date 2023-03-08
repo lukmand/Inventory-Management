@@ -35,7 +35,7 @@ def get_data(query):
     client = init_gsheet()
     
     # open the specified spreadsheet
-    cursor = conn.cursor()
+    cursor = client.cursor()
     rows = pd.DataFrame(cursor.execute(query))
 
     # print the data
@@ -45,7 +45,7 @@ def write_data(query):
     client = init_gsheet()
     
     # open the specified spreadsheet
-    cursor = conn.cursor()
+    cursor = client.cursor()
     cursor.execute(query)
 
 sheet_url = st.secrets["user_gsheets_url"]
