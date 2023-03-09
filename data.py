@@ -48,7 +48,8 @@ def get_data(query):
     
     # open the specified spreadsheet
     cursor = client.cursor()
-    rows = pd.DataFrame(cursor.execute(query))
+    results = cursor.execute(query).fetchall()
+    rows = pd.DataFrame.from_records(results, columns = [column[0] for column in cursor.description])
 
     # print the data
     return rows

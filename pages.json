@@ -5,16 +5,40 @@
         "icon": "",
         "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\Home.py"
     },
+    "9246e6da912bb80b0166b2bcd6e00d13": {
+        "page_script_hash": "9246e6da912bb80b0166b2bcd6e00d13",
+        "page_name": "Bonus",
+        "icon": "",
+        "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Bonus.py"
+    },
     "33a7f5e30cc6682f3d9db946056d691f": {
         "page_script_hash": "33a7f5e30cc6682f3d9db946056d691f",
         "page_name": "Inventory",
         "icon": "",
         "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Inventory.py"
     },
-    "613ce89bf406e4fd20428de035d8261d": {
-        "page_script_hash": "613ce89bf406e4fd20428de035d8261d",
+    "f29b27a91b45ff791fe45c91946f2026": {
+        "page_script_hash": "f29b27a91b45ff791fe45c91946f2026",
+        "page_name": "Invoice",
+        "icon": "",
+        "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Invoice.py"
+    },
+    "7d27fa6bc7c7f98bd29abe139bcfd5e3": {
+        "page_script_hash": "7d27fa6bc7c7f98bd29abe139bcfd5e3",
+        "page_name": "Manage_User",
+        "icon": "",
+        "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Manage User.py"
+    },
+    "ea61ca5d41582c1a294f90a0192fe838": {
+        "page_script_hash": "ea61ca5d41582c1a294f90a0192fe838",
+        "page_name": "Product_List",
+        "icon": "",
+        "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Product List.py"
+    },
+    "71cbb90c4d056650b6288f80a84f669f": {
+        "page_script_hash": "71cbb90c4d056650b6288f80a84f669f",
         "page_name": "Transaction_Page",
         "icon": "",
-        "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Transaction_Page.py"
+        "script_path": "D:\\Users\\davian.lukman.INTRANET\\Project\\Streamlit\\pages\\Transaction Page.py"
     }
 }
