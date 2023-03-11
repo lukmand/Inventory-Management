@@ -1,7 +1,7 @@
 import streamlit as st
 import hashlib
 import data
-
+from st_aggrid import AgGrid
 
 def get_product():
     product_url = st.secrets["product_gsheets_url"]
@@ -47,10 +47,22 @@ product_data = get_product()
 #print(product_data)
 #print(product_data["Product ID"].max())
 
-add_product(int(product_data["Product ID"].max()))
+add1, add2 = st.columns(2)
+
 st.markdown('''---''')
     
-st.dataframe(product_data)
-    
-    
+with add2.container():
+    grid_return = AgGrid(product_data, editable=True, fit_columns_on_grid_load=True)
+    save_button = st.button("Save Data")
+     
+    if save_button:
+        new_df = grid_return['data']
+        print(new_df)
+        data.gspread_upload_data("Product", new_df)
+        st.success("Data is updated")    
+        #st.experimental_rerun()
+        
+with add1.container():
+    add_product(int(product_data["Product ID"].max()))
+ 
 

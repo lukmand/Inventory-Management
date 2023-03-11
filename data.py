@@ -67,4 +67,10 @@ def gspread_write_data(sheet_name, values):
     sheet = client.open("Streamlit").worksheet(sheet_name)
     sheet.append_row(values)
 
-#gspread_write_data('User', ['email', 'password', 0])
+def gspread_upload_data(sheet_name, data):
+    client = init_gspread()
+    sheet = client.open("Streamlit").worksheet(sheet_name)
+    sheet.clear()
+    sheet.update([data.columns.values.tolist()] + data.values.tolist())
+    
+        

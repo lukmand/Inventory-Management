@@ -3,3 +3,4 @@ gspread
 shillelagh[all]
 google-api-python-client
 google-auth-oauthlib
+streamlit-aggrid
