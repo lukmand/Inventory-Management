@@ -28,18 +28,26 @@ def add_product(max_id):
         gsheet_product = 'Product'
         gsheet_size = 'Unit Size'
         gsheet_convert = "Size Conversion"
+        gsheet_inventory = "Inventory"
+        
+        inv_query = f'select max([Inventory ID]) from "{st.secrets["inventory_gsheets_url"]}"'
+        inv_id = data.get_data(inv_query).iat[0, 0]
         if submit_form:
             
             get_id = max_id + 1
             data.gspread_write_data(gsheet_product, [get_id, product_name])
             if ball_check:
                 data.gspread_write_data(gsheet_size, [get_id, product_name, 1, "BALL"])
+                data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 1, "BALL", 0])
             if halfball_check:
                 data.gspread_write_data(gsheet_size, [get_id, product_name, 2, "1/2 BALL"])
+                data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 2, "1/2 BALL", 0])
             if pack_check:
                 data.gspread_write_data(gsheet_size, [get_id, product_name, 3, "PACK BALL"])
+                data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 3, "PACK BALL", 0])
             if roll_check:
                 data.gspread_write_data(gsheet_size, [get_id, product_name, 4, "ROLL BALL"])
+                data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 4, "ROLL BALL", 0])
                 
             product_convert = get_conversion(st.secrets["unit_gsheets_url"], get_id) 
             #print(product_convert)
