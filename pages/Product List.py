@@ -46,8 +46,8 @@ def add_product(max_id):
                 data.gspread_write_data(gsheet_size, [get_id, product_name, 3, "PACK BALL"])
                 data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 3, "PACK BALL", 0])
             if roll_check:
-                data.gspread_write_data(gsheet_size, [get_id, product_name, 4, "ROLL BALL"])
-                data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 4, "ROLL BALL", 0])
+                data.gspread_write_data(gsheet_size, [get_id, product_name, 3, "ROLL BALL"])
+                data.gspread_write_data(gsheet_inventory, [inv_id + 1, get_id, product_name, 3, "ROLL BALL", 0])
                 
             product_convert = get_conversion(st.secrets["unit_gsheets_url"], get_id) 
             #print(product_convert)
