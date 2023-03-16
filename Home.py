@@ -99,9 +99,12 @@ if submit_button:
                 this is a prototype tools designed as Inventory Management, while providing analysis for the user.
                 Changelog:
                 1. Add Secure Login 
-                    
+                2. Navigation for each pages
+                3. Added Product Page
+                
                 Plan:
-                1. Navigation for each pages
+                1. Transaction Page
+                
             ''')
             login_placeholder.empty()
         else:
