@@ -13,6 +13,7 @@ gsheet_transaction = "Transaction"
 gsheet_invoice = "Invoice"
 gsheet_inventory = "Inventory"
 
+st.set_page_config(page_title='Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
 
 def get_product(secret):
     product_url = secret

@@ -55,6 +55,8 @@ def calculate_in(option, product_size, product_quantity, inventory_url, gsheet_i
     cursor.execute(update_query)
     data.gspread_upload_data(gsheet_inventory, inventory_data)
 
+st.set_page_config(page_title='Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
+
 st.write('''
 	# Purchase Order
 ''')
@@ -84,12 +86,6 @@ product_quantity = c4.number_input("Enter Quantity", min_value=0)
 product_price = c1.number_input("Enter Total Price", min_value = 0)
 
 add_transaction = c1.button("Add Purchase")
-
-if add_transaction:
-    calculate_in(option, product_size, product_quantity, inventory_url, gsheet_inventory)
-    data.gspread_write_data(gsheet_purchase, [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price])
-    st.success("Purchase Added")
-    st.experimental_rerun()
     
 st.markdown('''---''')
 
@@ -97,3 +93,8 @@ st.write("# Purchase History List")
 purchase_history = get_product(purchase_url)
 AgGrid(purchase_history, editable=False, fit_columns_on_grid_load=True, key = 'purchase_history')
 
+if add_transaction:
+    calculate_in(option, product_size, product_quantity, inventory_url, gsheet_inventory)
+    data.gspread_write_data(gsheet_purchase, [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price])
+    st.success("Purchase Added")
+    st.experimental_rerun()

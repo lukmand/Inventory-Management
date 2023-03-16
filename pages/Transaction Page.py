@@ -16,6 +16,8 @@ gsheet_transaction = "Transaction"
 gsheet_invoice = "Invoice"
 gsheet_inventory = "Inventory"
 
+st.set_page_config(page_title='Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
+
 if "transaction_df" not in st.session_state:
     st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price", "Disc1", "Disc2", "Disc3", "Total Price"])
 

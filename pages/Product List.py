@@ -58,7 +58,7 @@ def add_product(max_id):
             
         
 
-st.set_page_config(page_title='Product List - Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
+st.set_page_config(page_title='Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
 
 st.title('Product List')
 st.write("Add New Product")
