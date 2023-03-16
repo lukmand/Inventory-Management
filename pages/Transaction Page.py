@@ -140,6 +140,7 @@ if submit:
         
         data.gspread_write_data(gsheet_invoice, [invoiceid, str(datetime.datetime.now().isoformat()), "PROCESS", vendor, invoiceprize, 0])
         st.session_state.transaction_df = st.session_state.transaction_df.iloc[0:0]
+        st.experimental_rerun()
         #else:
         #    st.warning("item exceeds stocks")
         
