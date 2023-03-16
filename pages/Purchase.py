@@ -48,10 +48,10 @@ def calculate_in(option, product_size, product_quantity, inventory_url, gsheet_i
     
     update_query = '''
         update inventory_data
-        set Stock = inventory_data.Stock + Quantity
+        set Stock = inventory_data.Stock + {product_quantity}
         where inventory_data.[Product ID] = {option}
             and inventory_data.[Unit ID] = {product_size}
-    '''.format(option=option, product_size = product_size)
+    '''.format(option=option, product_size = product_size, product_quantity=product_quantity)
     cursor.execute(update_query)
     data.gspread_upload_data(gsheet_inventory, inventory_data)
 
