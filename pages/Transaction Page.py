@@ -17,7 +17,7 @@ gsheet_invoice = "Invoice"
 gsheet_inventory = "Inventory"
 
 if "transaction_df" not in st.session_state:
-    st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price", "Disc1", "Disc2", "Disc3", "Total Prize"])
+    st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price", "Disc1", "Disc2", "Disc3", "Total Price"])
 
 def get_product(secret):
     product_url = secret
@@ -77,7 +77,7 @@ st.write('''
     # Add Transaction
 ''')
 
-c1, c2 = st.columns(2, gap="small")
+c1, c2 = st.columns(2)
 product_df = get_product(st.secrets["product_gsheets_url"])
 for i in product_df.values.tolist():
     product_dict[i[0]] = i[1]
@@ -99,19 +99,19 @@ product_size = c5.selectbox("Select Unit", options = list(size_dict.keys()), for
 
 #maxvalue = get_stock(inventory_url, conversion_url, product_size, option)
 product_quantity = c4.number_input("Enter Quantity", min_value=0)
-product_prize = c1.number_input("Enter Prize per Unit", min_value = 0)
+product_price = c1.number_input("Enter Price per Unit", min_value = 0)
 
 add_transaction = c1.button("Add Transaction")
 
 if add_transaction:
 
     disc1, disc2, disc3 = get_discount(product_quantity, product_size, product_in)
-    total_prize = product_quantity * product_prize
-    disc1_prize = disc1 * total_prize
-    disc2_prize = disc2 * (total_prize - disc1_prize)
-    disc3_prize = disc3 * (total_prize - disc1_prize - disc2_prize)
-    final_prize = total_prize - disc1_prize - disc2_prize - disc3_prize
-    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_prize, str(disc1*100) + '%', str(disc2*100) + '%', str(disc3*100) + '%', final_prize]
+    total_price = product_quantity * product_price
+    disc1_price = disc1 * total_price
+    disc2_price = disc2 * (total_price - disc1_price)
+    disc3_price = disc3 * (total_price - disc1_price - disc2_price)
+    final_price = total_price - disc1_price - disc2_price - disc3_price
+    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+_+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_prize, str(disc1*100) + '%', str(disc2*100) + '%', str(disc3*100) + '%', final_price]
 
     
 st.markdown(''' --- ''')
@@ -135,7 +135,7 @@ if submit:
         #calculate_in(st.session_state.transaction_df)
         #calculate_out(st.session_state.transaction_df)
         invoiceid = "INV_"+str(datetime.datetime.now().timestamp())
-        invoiceprize = st.session_state.transaction_df["Total Prize"].sum()
+        invoiceprize = st.session_state.transaction_df["Total Price"].sum()
         invoicedate = datetime.datetime.now().isoformat()
         invoicemature = datetime.datetime.now() + datetime.timedelta(days=product_mature)
         
