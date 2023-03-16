@@ -56,7 +56,7 @@ def calculate_in(option, product_size, product_quantity, inventory_url, gsheet_i
     data.gspread_upload_data(gsheet_inventory, inventory_data)
 
 st.write('''
-	# Purchase order
+	# Purchase Order
 ''')
 
 c1, c2 = st.columns(2)
