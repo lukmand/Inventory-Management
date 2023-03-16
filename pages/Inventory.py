@@ -4,6 +4,11 @@ import data
 import pandas as pd
 from st_aggrid import AgGrid, GridOptionsBuilder
 
+def get_product(secret):
+    product_url = secret
+    product_query = f'select * from "{product_url}"'
+    return data.get_data(product_query)
+
 st.write('''
 	# Inventory Page
 ''')

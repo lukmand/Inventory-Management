@@ -26,7 +26,7 @@ def edit_invoice(df, gsheet_invoice):
     edit_query = '''
         update df
         set isProcess = 1
-        where Status = 'PAID'
+        where Status = 'INVOICE'
     '''
     cursor.execute(edit_query)
     #print(df)
@@ -46,7 +46,7 @@ def calculate_in(df, transaction_url, inventory_url, gsheet_inventory):
             from df x
             inner join "{transaction_url}" y on x.[Invoice ID] = y.[Invoice ID]
             where y.[Transaction] = "IN"
-                and x.[Status] = "PAID"
+                and x.[Status] = "INVOICE"
                 and x.[isProcess] = 0
             group by y.[Product ID], y.[Unit ID]
         ) x
@@ -67,7 +67,7 @@ def calculate_out(df, inventory_url, conversion_url, transaction_url, inventory_
         from df x
         inner join "{transaction_url}" y on x.[Invoice ID] = y.[Invoice ID]
         where y.[Transaction] = "OUT"
-            and x.[Status] = "PAID"
+            and x.[Status] = "INVOICE"
             and x.[isProcess] = 0
         group by y.[Product ID], y.[Unit ID]
     '''.format(transaction_url = transaction_url)
@@ -245,7 +245,7 @@ st.write('''
 	# List of Invoice
 ''')
 
-status_list = ('PROCESS', 'CANCELLED', 'PAID')
+status_list = ('PROCESS', 'CANCELLED', 'INVOICE')
 invoice_data = get_product(invoice_url)
 gb = GridOptionsBuilder.from_dataframe(invoice_data)
 gb.configure_column("Status", editable = True, cellEditor = 'agSelectCellEditor', cellEditorParams = {'values': status_list})
@@ -257,7 +257,7 @@ save_invoice_button = st.button("Save Invoice Data")
 if save_invoice_button:
     invoice_df = invoice_grid['data']
     if readjust_stock(invoice_df, inventory_url, conversion_url, transaction_url):  
-        calculate_in(invoice_df, transaction_url, inventory_url, gsheet_inventory)
+        #calculate_in(invoice_df, transaction_url, inventory_url, gsheet_inventory)
         calculate_out(invoice_df, inventory_url, conversion_url, transaction_url, gsheet_inventory)
         edit_invoice(invoice_df, gsheet_invoice)
         

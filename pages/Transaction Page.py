@@ -90,8 +90,9 @@ with c1.container():
     st.write("Current Stock:")
     AgGrid(get_stock_list(option, inventory_url), editable=False, fit_columns_on_grid_load=True)
 
-c3, c4, c5 = c1.columns(3)
-product_in = c3.radio("Select Transaction", ("IN", "OUT"))
+c4, c5 = c1.columns(2)
+#product_in = c3.radio("Select Transaction", ("IN", "OUT"))
+product_in = "OUT"
 
 size_dict = get_size_list(option, size_url)
 product_size = c5.selectbox("Select Unit", options = list(size_dict.keys()), format_func = format_func2)
@@ -117,7 +118,9 @@ st.markdown(''' --- ''')
 
 st.write("# Transaction List")
 with st.container():
-    vendor = st.text_input("Enter Vendor/Sales Name")
+    c10, c11 = st.columns(2)
+    vendor = c10.text_input("Enter Vendor/Sales Name")
+    product_mature = c11.number_input("Enter Maturity Day", min_value=0)
     AgGrid(st.session_state.transaction_df, editable=False, fit_columns_on_grid_load=True)
 
 c6, c7 = st.columns(2)
@@ -133,12 +136,14 @@ if submit:
         #calculate_out(st.session_state.transaction_df)
         invoiceid = "INV_"+str(datetime.datetime.now().timestamp())
         invoiceprize = st.session_state.transaction_df["Total Prize"].sum()
-            
+        invoicedate = datetime.datetime.now().isoformat()
+        invoicemature = datetime.datetime.now() + datetime.timedelta(days=product_mature)
+        
         st.session_state.transaction_df["Invoice ID"] = invoiceid
         for i in st.session_state.transaction_df.values.tolist():
             data.gspread_write_data(gsheet_transaction, i)
         
-        data.gspread_write_data(gsheet_invoice, [invoiceid, str(datetime.datetime.now().isoformat()), "PROCESS", vendor, invoiceprize, 0])
+        data.gspread_write_data(gsheet_invoice, [invoiceid, invoicedate, invoicemature.isoformat(), "PROCESS", vendor, invoiceprize, 0])
         st.session_state.transaction_df = st.session_state.transaction_df.iloc[0:0]
         st.experimental_rerun()
         #else:
