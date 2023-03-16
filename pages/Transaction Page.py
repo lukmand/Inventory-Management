@@ -111,7 +111,7 @@ if add_transaction:
     disc2_price = disc2 * (total_price - disc1_price)
     disc3_price = disc3 * (total_price - disc1_price - disc2_price)
     final_price = total_price - disc1_price - disc2_price - disc3_price
-    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+_+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_prize, str(disc1*100) + '%', str(disc2*100) + '%', str(disc3*100) + '%', final_price]
+    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_prize, str(disc1*100) + '%', str(disc2*100) + '%', str(disc3*100) + '%', final_price]
 
     
 st.markdown(''' --- ''')
