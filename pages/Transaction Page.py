@@ -5,6 +5,7 @@ import pandas as pd
 from st_aggrid import AgGrid
 import datetime
 
+
 product_dict = {}
 size_dict = {}
 inventory_url = st.secrets["inventory_gsheets_url"]
@@ -137,7 +138,7 @@ if submit:
         for i in st.session_state.transaction_df.values.tolist():
             data.gspread_write_data(gsheet_transaction, i)
         
-        data.gspread_write_data(gsheet_invoice, [invoiceid, datetime.datetime.now(), "PROCESS", vendor, invoiceprize, 0])
+        data.gspread_write_data(gsheet_invoice, [invoiceid, str(datetime.datetime.now().isoformat()), "PROCESS", vendor, invoiceprize, 0])
         st.session_state.transaction_df = st.session_state.transaction_df.iloc[0:0]
         #else:
         #    st.warning("item exceeds stocks")
