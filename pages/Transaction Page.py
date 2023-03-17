@@ -66,10 +66,10 @@ def get_discount(df):
     disc_query = '''
         select sum(Quantity)
         from df
-        where ['Unit ID'] = 1
+        where [Unit ID] = 1
     '''
     disc_res = cursor.execute(disc_query).fetchall()
-    disc_df = pd.DataFrame.from_records(out_res, columns = [column[0] for column in cursor.description])
+    disc_df = pd.DataFrame.from_records(disc_res, columns = [column[0] for column in cursor.description])
     
     ball_size = disc_df.iat[0, 0] 
     
@@ -158,7 +158,7 @@ if submit:
         for i in st.session_state.transaction_df.values.tolist():
             data.gspread_write_data(gsheet_transaction, i)
         
-        data.gspread_write_data(gsheet_invoice, [invoiceid, invoicedate, invoicemature.isoformat(), "PROCESS", vendor, invoiceprice, 0, disc1, disc2, disc3, disc3_price])
+        data.gspread_write_data(gsheet_invoice, [invoiceid, invoicedate, invoicemature.isoformat(), "PROCESS", vendor, float(invoiceprice), int(0), float(disc1), float(disc2), float(disc3), float(disc3_price)])
         st.session_state.transaction_df = st.session_state.transaction_df.iloc[0:0]
         st.experimental_rerun()
         #else:
