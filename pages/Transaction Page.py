@@ -19,7 +19,7 @@ gsheet_inventory = "Inventory"
 st.set_page_config(page_title='Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
 
 if "transaction_df" not in st.session_state:
-    st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price", "Disc1", "Disc2", "Disc3", "Total Price"])
+    st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price"])
 
 def get_product(secret):
     product_url = secret
@@ -107,13 +107,7 @@ add_transaction = c1.button("Add Transaction")
 
 if add_transaction:
 
-    disc1, disc2, disc3 = get_discount(product_quantity, product_size, product_in)
-    total_price = product_quantity * product_price
-    disc1_price = disc1 * total_price
-    disc2_price = disc2 * (total_price - disc1_price)
-    disc3_price = disc3 * (total_price - disc1_price - disc2_price)
-    final_price = total_price - disc1_price - disc2_price - disc3_price
-    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price, str(disc1*100) + '%', str(disc2*100) + '%', str(disc3*100) + '%', final_price]
+    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price]
 
     
 st.markdown(''' --- ''')
