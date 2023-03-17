@@ -19,7 +19,7 @@ gsheet_inventory = "Inventory"
 st.set_page_config(page_title='Inventory Management Tool', page_icon=':bar_chart:', layout='wide')
 
 if "transaction_df" not in st.session_state:
-    st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price"])
+    st.session_state.transaction_df = pd.DataFrame(columns = ["Transaction ID", "Invoice ID", "Product ID", "Product Name", "Transaction", "Quantity", "Unit ID", "Unit Size", "Price", "Total Price"])
 
 def get_product(secret):
     product_url = secret
@@ -106,8 +106,8 @@ product_price = c1.number_input("Enter Price per Unit", min_value = 0)
 add_transaction = c1.button("Add Transaction")
 
 if add_transaction:
-
-    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price]
+    
+    st.session_state.transaction_df.loc[len(st.session_state.transaction_df)] = [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), "", option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price, product_price * product_quantity]
 
     
 st.markdown(''' --- ''')
