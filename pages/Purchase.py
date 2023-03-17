@@ -86,13 +86,13 @@ product_quantity = c4.number_input("Enter Quantity", min_value=0)
 product_price = c1.number_input("Enter Total Price", min_value = 0)
 
 add_transaction = c1.button("Add Purchase")
-    
+
 if add_transaction:
     calculate_in(option, product_size, product_quantity, inventory_url, gsheet_inventory)
     data.gspread_write_data(gsheet_purchase, [product_in+"_"+str(option)+"_"+str(datetime.datetime.now().timestamp()), option, format_func(option), product_in, product_quantity, product_size, format_func2(product_size), product_price])
     st.success("Purchase Added")
-    st.experimental_rerun()	
-	
+    st.experimental_rerun()
+    
 st.markdown('''---''')
 
 st.write("# Purchase History List")

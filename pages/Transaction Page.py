@@ -55,24 +55,38 @@ def get_size_list(option, size_url):
         
     return size_dict
     
-def get_discount(product_quantity, product_size, product_in):
+def get_discount(df):
     disc1 = 0.00
     disc2 = 0.00
     disc3 = 0.00
-    if product_size == 1 and product_in == "OUT":
-        if product_quantity >= 5 and product_quantity < 30:
-            disc1 = .02
-        elif product_quantity >= 30 and product_quantity < 60:
-            disc1 = .02
-            disc2 = .01
-        elif product_quantity >= 60 and product_quantity < 100:
-            disc1 = .02
-            disc2 = .02  
-        elif product_quantity >= 100:
-            disc1 = .02
-            disc2 = .03
-        else:
-            pass
+    
+    client = data.init_gsheet()
+    cursor = client.cursor()
+    
+    disc_query = '''
+        select sum(Quantity)
+        from df
+        where ['Unit ID'] = 1
+    '''
+    disc_res = cursor.execute(disc_query).fetchall()
+    disc_df = pd.DataFrame.from_records(out_res, columns = [column[0] for column in cursor.description])
+    
+    ball_size = disc_df.iat[0, 0] 
+    
+    if ball_size >= 5 and ball_size < 30:
+        disc1 = .02
+    elif ball_size >= 30 and ball_size < 60:
+        disc1 = .02
+        disc2 = .01
+    elif ball_size >= 60 and ball_size < 100:
+        disc1 = .02
+        disc2 = .02  
+    elif ball_size >= 100:
+        disc1 = .02
+        disc2 = .03
+    else:
+        pass
+    
     return disc1, disc2, disc3
 
 st.write('''
@@ -131,15 +145,20 @@ if submit:
         #calculate_in(st.session_state.transaction_df)
         #calculate_out(st.session_state.transaction_df)
         invoiceid = "INV_"+str(datetime.datetime.now().timestamp())
-        invoiceprize = st.session_state.transaction_df["Total Price"].sum()
+        invoiceprice = st.session_state.transaction_df["Total Price"].sum()
         invoicedate = datetime.datetime.now().isoformat()
         invoicemature = datetime.datetime.now() + datetime.timedelta(days=product_mature)
+        
+        disc1, disc2, disc3 = get_discount(st.session_state.transaction_df)
+        disc1_price = invoiceprice - (disc1 * invoiceprice)
+        disc2_price = disc1_price - (disc2 * disc1_price)
+        disc3_price = disc2_price - (disc2 * disc2_price)
         
         st.session_state.transaction_df["Invoice ID"] = invoiceid
         for i in st.session_state.transaction_df.values.tolist():
             data.gspread_write_data(gsheet_transaction, i)
         
-        data.gspread_write_data(gsheet_invoice, [invoiceid, invoicedate, invoicemature.isoformat(), "PROCESS", vendor, invoiceprize, 0])
+        data.gspread_write_data(gsheet_invoice, [invoiceid, invoicedate, invoicemature.isoformat(), "PROCESS", vendor, invoiceprice, 0, disc1, disc2, disc3, disc3_price])
         st.session_state.transaction_df = st.session_state.transaction_df.iloc[0:0]
         st.experimental_rerun()
         #else:
