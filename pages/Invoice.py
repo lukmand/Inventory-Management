@@ -20,6 +20,17 @@ def get_product(secret):
     product_query = f'select * from "{product_url}"'
     return data.get_data(product_query)
     
+def get_invoice_detail(df, transaction_url):
+    query = '''
+        select
+            y.*
+        from df x
+        inner join "{transaction_url}" y on x.[Invoice ID] = y.[Invoice ID]
+    '''.format(transaction_url = transaction_url)
+    
+    
+    return data.get_data(query)
+    
 def edit_invoice(df, gsheet_invoice):
     client = data.init_gsheet()
     cursor = client.cursor()
@@ -250,6 +261,7 @@ status_list = ('PROCESS', 'CANCELLED', 'INVOICE')
 invoice_data = get_product(invoice_url)
 gb = GridOptionsBuilder.from_dataframe(invoice_data)
 gb.configure_column("Status", editable = True, cellEditor = 'agSelectCellEditor', cellEditorParams = {'values': status_list})
+gb.configure_selection(use_checkbox = True)
 vgo = gb.build()
 
 invoice_grid = AgGrid(invoice_data, gridOptions = vgo, fit_columns_on_grid_load=True)
@@ -266,4 +278,14 @@ if save_invoice_button:
         st.experimental_rerun()
     else:
         st.error("Item Exceeds Stock")
+        
+st.markdown(''' --- ''')
+
+
+
+select_invoice = invoice_grid['selected_rows']
+if select_invoice:
+    st.write("# Invoice Detail")
+    AgGrid(get_invoice_detail(pd.DataFrame(select_invoice), transaction_url), fit_columns_on_grid_load=True)
     
+    print_bill = st.button("Print Invoice")
