@@ -22,15 +22,17 @@ def approach_maturity_analytics(invoice_url):
     query = '''
         select
             *,
-            julianday([Maturity Date]) - julianday(Date) Remaining_Days
+            case when [Maturity Date] is null then cast(julianday(date()) - julianday(Date) as int)
+                 else cast(julianday([Maturity Date]) - julianday(Date) as int)
+            end Remaining_Days
         from "{invoice_url}"
+        where Status = "INVOICE"
     '''.format(invoice_url = invoice_url)
     
     inv_res = cursor.execute(query).fetchall()
     inv_df = pd.DataFrame.from_records(inv_res, columns = [column[0] for column in cursor.description])
     
-    
-    return
+    return inv_df
 
 st.write('''
 	# Inventory & Invoice Analytics
@@ -38,7 +40,7 @@ st.write('''
 
 st.markdown(''' --- ''')
 
-
 st.write("Approaching MaturityDate")
-approach_maturity_analytics(invoice_url)
+inv_df = approach_maturity_analytics(invoice_url).sort_values('Remaining_Days')
+AgGrid(inv_df, fit_columns_on_grid_load=True)
 
